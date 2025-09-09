@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
@@ -10,48 +10,50 @@ const timeRanges = [
   { id: "7D", label: "7D" },
 ];
 
-const data1H = [
-  { time: "12:00", value: 12 },
-  { time: "12:15", value: 15 },
-  { time: "12:30", value: 8 },
-  { time: "12:45", value: 18 },
-  { time: "13:00", value: 14 },
-  { time: "13:15", value: 20 },
-];
+// Generate dynamic data points
+const generateDataPoint = (base: number, variance: number) => 
+  Math.max(0, base + (Math.random() - 0.5) * variance);
 
-const data24H = [
-  { time: "00:00", value: 5 },
-  { time: "04:00", value: 8 },
-  { time: "08:00", value: 15 },
-  { time: "12:00", value: 18 },
-  { time: "16:00", value: 12 },
-  { time: "20:00", value: 10 },
-];
-
-const data7D = [
-  { time: "Mon", value: 45 },
-  { time: "Tue", value: 52 },
-  { time: "Wed", value: 38 },
-  { time: "Thu", value: 65 },
-  { time: "Fri", value: 58 },
-  { time: "Sat", value: 42 },
-  { time: "Sun", value: 48 },
-];
-
-const dataMap = {
-  "1H": data1H,
-  "24H": data24H,
-  "7D": data7D,
+const generateTimeData = (points: number, baseValue: number) => {
+  const now = new Date();
+  return Array.from({ length: points }, (_, i) => {
+    const time = new Date(now.getTime() - (points - 1 - i) * 900000); // 15 min intervals
+    return {
+      time: time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+      value: generateDataPoint(baseValue, 8)
+    };
+  });
 };
 
 export function TrafficAnalysis() {
   const [activeRange, setActiveRange] = useState("1H");
+  const [data, setData] = useState({
+    "1H": generateTimeData(6, 15),
+    "24H": generateTimeData(6, 12),
+    "7D": generateTimeData(7, 50)
+  });
+
+  // Simulate real-time updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setData(prev => ({
+        "1H": generateTimeData(6, 15),
+        "24H": generateTimeData(6, 12),
+        "7D": generateTimeData(7, 50)
+      }));
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <Card>
+    <Card className="animate-fade-in">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">Network Traffic Analysis</CardTitle>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            Network Traffic Analysis
+            <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
+          </CardTitle>
           <div className="flex gap-1">
             {timeRanges.map((range) => (
               <Button
@@ -59,7 +61,7 @@ export function TrafficAnalysis() {
                 variant={activeRange === range.id ? "default" : "outline"}
                 size="sm"
                 onClick={() => setActiveRange(range.id)}
-                className="px-4 py-2"
+                className="px-4 py-2 transition-all duration-200 hover:scale-105"
               >
                 {range.label}
               </Button>
@@ -70,7 +72,7 @@ export function TrafficAnalysis() {
       <CardContent>
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={dataMap[activeRange as keyof typeof dataMap]}>
+            <LineChart data={data[activeRange as keyof typeof data]}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
               <XAxis 
                 dataKey="time" 
@@ -87,8 +89,10 @@ export function TrafficAnalysis() {
                 type="monotone" 
                 dataKey="value" 
                 stroke="hsl(var(--primary))" 
-                strokeWidth={2}
-                dot={false}
+                strokeWidth={3}
+                dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, stroke: "hsl(var(--primary))", strokeWidth: 2 }}
+                className="animate-fade-in"
               />
             </LineChart>
           </ResponsiveContainer>

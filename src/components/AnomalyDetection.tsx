@@ -1,43 +1,85 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-const anomalyData = [
-  { x: 85, y: 120, type: "critical" },
-  { x: 92, y: 115, type: "critical" },
-  { x: 88, y: 118, type: "critical" },
-  { x: 45, y: 85, type: "warning" },
-  { x: 52, y: 88, type: "warning" },
-  { x: 48, y: 82, type: "warning" },
-  { x: 55, y: 90, type: "warning" },
-  { x: 58, y: 92, type: "warning" },
-  { x: 42, y: 78, type: "warning" },
-  { x: 49, y: 85, type: "warning" },
-  { x: 51, y: 87, type: "warning" },
-  { x: 46, y: 83, type: "warning" },
-  { x: 53, y: 89, type: "warning" },
-  { x: 47, y: 84, type: "warning" },
-  { x: 50, y: 86, type: "warning" },
-];
+interface AnomalyPoint {
+  x: number;
+  y: number;
+  type: "critical" | "warning";
+  id: string;
+}
+
+const generateAnomalyPoint = (type: "critical" | "warning"): AnomalyPoint => ({
+  x: Math.random() * 90 + 10,
+  y: type === "critical" ? Math.random() * 40 + 100 : Math.random() * 60 + 60,
+  type,
+  id: Math.random().toString(36).substr(2, 9)
+});
 
 export function AnomalyDetection() {
+  const [anomalyData, setAnomalyData] = useState<AnomalyPoint[]>([
+    ...Array(3).fill(0).map(() => generateAnomalyPoint("critical")),
+    ...Array(12).fill(0).map(() => generateAnomalyPoint("warning"))
+  ]);
+
+  const [newPoints, setNewPoints] = useState<string[]>([]);
+
+  // Simulate real-time anomaly detection
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnomalyData(prev => {
+        const updated = [...prev];
+        
+        // Randomly add new anomalies
+        if (Math.random() < 0.3) {
+          const newPoint = generateAnomalyPoint(Math.random() < 0.2 ? "critical" : "warning");
+          updated.push(newPoint);
+          setNewPoints(curr => [...curr, newPoint.id]);
+          
+          // Remove highlight after animation
+          setTimeout(() => {
+            setNewPoints(curr => curr.filter(id => id !== newPoint.id));
+          }, 2000);
+        }
+        
+        // Remove old points to keep manageable count
+        if (updated.length > 20) {
+          updated.splice(0, updated.length - 15);
+        }
+        
+        // Slightly move existing points
+        return updated.map(point => ({
+          ...point,
+          x: Math.max(5, Math.min(95, point.x + (Math.random() - 0.5) * 2)),
+          y: Math.max(30, Math.min(140, point.y + (Math.random() - 0.5) * 3))
+        }));
+      });
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const criticalCount = anomalyData.filter(d => d.type === "critical").length;
   const warningCount = anomalyData.filter(d => d.type === "warning").length;
 
   return (
-    <Card>
+    <Card className="animate-fade-in">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">Anomaly Detection</CardTitle>
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            Anomaly Detection
+            <div className="w-2 h-2 bg-destructive rounded-full animate-pulse" />
+          </CardTitle>
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">Critical:</span>
-              <Badge variant="destructive" className="min-w-6 justify-center">
+              <Badge variant="destructive" className="min-w-6 justify-center transition-all duration-300 animate-scale-in">
                 {criticalCount}
               </Badge>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">Warning:</span>
-              <Badge variant="secondary" className="min-w-6 justify-center">
+              <Badge variant="secondary" className="min-w-6 justify-center transition-all duration-300 animate-scale-in">
                 {warningCount}
               </Badge>
             </div>
@@ -45,7 +87,7 @@ export function AnomalyDetection() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="relative h-[300px] w-full bg-muted/20 rounded border">
+        <div className="relative h-[300px] w-full bg-muted/20 rounded border overflow-hidden">
           <svg width="100%" height="100%" viewBox="0 0 400 300">
             {/* Grid lines */}
             <defs>
@@ -61,15 +103,32 @@ export function AnomalyDetection() {
             <text x="15" y="170" className="text-xs fill-muted-foreground" textAnchor="middle">3</text>
             
             {/* Data points */}
-            {anomalyData.map((point, index) => (
-              <circle
-                key={index}
-                cx={point.x * 4}
-                cy={300 - point.y * 2}
-                r="3"
-                fill={point.type === "critical" ? "hsl(var(--critical))" : "hsl(var(--warning-status))"}
-                className="opacity-80"
-              />
+            {anomalyData.map((point) => (
+              <g key={point.id}>
+                <circle
+                  cx={point.x * 4}
+                  cy={300 - point.y * 2}
+                  r="3"
+                  fill={point.type === "critical" ? "hsl(var(--critical))" : "hsl(var(--warning-status))"}
+                  className={`transition-all duration-500 ${
+                    newPoints.includes(point.id) 
+                      ? 'animate-pulse opacity-100' 
+                      : 'opacity-70 hover:opacity-100'
+                  }`}
+                />
+                {newPoints.includes(point.id) && (
+                  <circle
+                    cx={point.x * 4}
+                    cy={300 - point.y * 2}
+                    r="8"
+                    fill="none"
+                    stroke={point.type === "critical" ? "hsl(var(--critical))" : "hsl(var(--warning-status))"}
+                    strokeWidth="2"
+                    className="animate-ping"
+                    opacity="0.6"
+                  />
+                )}
+              </g>
             ))}
           </svg>
         </div>
