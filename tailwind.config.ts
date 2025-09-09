@@ -40,9 +40,17 @@ export default {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))'
 				},
+				'warning-status': {
+					DEFAULT: 'hsl(var(--warning-status))',
+					foreground: 'hsl(var(--warning-status-foreground))'
+				},
 				success: {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))'
+				},
+				critical: {
+					DEFAULT: 'hsl(var(--critical))',
+					foreground: 'hsl(var(--critical-foreground))'
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',

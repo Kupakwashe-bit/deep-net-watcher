@@ -2,68 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Deep Network Watcher - Cybersecurity Dashboard Design System
+/* NetGuard AI Dashboard - Professional Light Theme
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Dark cybersecurity theme */
-    --background: 224 16% 8%;
-    --foreground: 190 100% 95%;
+    /* Clean light theme */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 224 16% 10%;
-    --card-foreground: 190 100% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 224 16% 12%;
-    --popover-foreground: 190 100% 95%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    /* Cyber blue primary */
-    --primary: 190 100% 50%;
-    --primary-foreground: 224 16% 8%;
+    /* Professional blue primary */
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
 
-    /* Dark secondary */
-    --secondary: 224 16% 14%;
-    --secondary-foreground: 190 80% 90%;
+    /* Light grey secondary */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 224 16% 12%;
-    --muted-foreground: 190 20% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Neon cyan accent */
-    --accent: 185 100% 60%;
-    --accent-foreground: 224 16% 8%;
+    /* Blue accent */
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    /* Threat red */
-    --destructive: 0 85% 60%;
-    --destructive-foreground: 190 100% 95%;
+    /* Danger red */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    /* Warning amber */
-    --warning: 45 100% 65%;
-    --warning-foreground: 224 16% 8%;
+    /* Warning orange */
+    --warning: 38.2 92% 50%;
+    --warning-foreground: 222.2 84% 4.9%;
 
     /* Success green */
-    --success: 120 60% 50%;
-    --success-foreground: 190 100% 95%;
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 210 40% 98%;
 
-    --border: 224 16% 18%;
-    --input: 224 16% 16%;
-    --ring: 190 100% 50%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom cyber gradients */
-    --gradient-cyber: linear-gradient(135deg, hsl(190 100% 50%), hsl(185 100% 60%));
-    --gradient-threat: linear-gradient(135deg, hsl(0 85% 60%), hsl(15 85% 55%));
-    --gradient-success: linear-gradient(135deg, hsl(120 60% 50%), hsl(140 60% 45%));
-    --gradient-dark: linear-gradient(135deg, hsl(224 16% 8%), hsl(224 16% 12%));
-
-    /* Glow effects */
-    --glow-primary: 0 0 20px hsl(190 100% 50% / 0.3);
-    --glow-threat: 0 0 20px hsl(0 85% 60% / 0.3);
-    --glow-success: 0 0 20px hsl(120 60% 50% / 0.3);
-
-    /* Animation */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Status colors */
+    --critical: 0 84.2% 60.2%;
+    --critical-foreground: 210 40% 98%;
+    --warning-status: 38.2 92% 50%;
+    --warning-status-foreground: 222.2 84% 4.9%;
 
     --sidebar-background: 0 0% 98%;
 
